@@ -6,11 +6,15 @@ import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.material.MapColor
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber
 import thedarkcolour.kotlinforforge.forge.registerObject
 
+@EventBusSubscriber(modid = FlynResourceGen.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 object ResourceGen {
 
-    val resourceGenBlock by FlynResourceGen.BLOCKS.registerObject("resource_gen") {
+    const val BLOCK_NAME = "resource_gen"
+
+    val resourceGenBlock by FlynResourceGen.BLOCKS.registerObject(BLOCK_NAME) {
         Block(
             BlockBehaviour.Properties.of().apply {
                 mapColor(MapColor.STONE)
@@ -18,7 +22,7 @@ object ResourceGen {
         )
     }
 
-    val resourceGenBlockItem by FlynResourceGen.ITEMS.registerObject("resource_gen") {
+    val resourceGenBlockItem by FlynResourceGen.ITEMS.registerObject(BLOCK_NAME) {
         BlockItem(
             resourceGenBlock,
             Item.Properties()

@@ -1,7 +1,5 @@
 package com.flyn.flyn_resource_gen
 
-import com.flyn.flyn_resource_gen.blocks.ResourceGen
-import com.flyn.flyn_resource_gen.creative_tabs.MainTab
 import net.minecraft.core.registries.Registries
 import net.minecraft.world.item.CreativeModeTab
 import net.minecraft.world.item.Item
@@ -26,18 +24,17 @@ import thedarkcolour.kotlinforforge.forge.runForDist
 object FlynResourceGen {
 
     const val MOD_ID = "flyn_resource_gen"
+    val LOGGER = LogManager.getLogger(MOD_ID)
 
     val BLOCKS: DeferredRegister<Block> = DeferredRegister.create(ForgeRegistries.BLOCKS, MOD_ID)
     val ITEMS: DeferredRegister<Item> = DeferredRegister.create(ForgeRegistries.ITEMS, MOD_ID)
     val CREATIVE_MODE_TABS: DeferredRegister<CreativeModeTab> =
         DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MOD_ID)
 
-    private val LOGGER = LogManager.getLogger(MOD_ID)
-
     init {
-        registerBlocks()
-        registerItems()
-        registerCreativeModeTabs()
+        BLOCKS.register(MOD_BUS)
+        ITEMS.register(MOD_BUS)
+        CREATIVE_MODE_TABS.register(MOD_BUS)
 
         runForDist(
             clientTarget = {
@@ -48,24 +45,6 @@ object FlynResourceGen {
         )
 
         LOADING_CONTEXT.registerConfig(ModConfig.Type.COMMON, Config.SPEC)
-    }
-
-    private fun registerBlocks() {
-        run {
-            ResourceGen
-        }
-        BLOCKS.register(MOD_BUS)
-    }
-
-    private fun registerItems() {
-        ITEMS.register(MOD_BUS)
-    }
-
-    private fun registerCreativeModeTabs() {
-        run {
-            MainTab
-        }
-        CREATIVE_MODE_TABS.register(MOD_BUS)
     }
 
     @SubscribeEvent
