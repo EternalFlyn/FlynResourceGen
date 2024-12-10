@@ -1,6 +1,7 @@
 package com.flyn.flyn_resource_gen.blocks
 
 import com.flyn.flyn_resource_gen.FlynResourceGen
+import com.flyn.flyn_resource_gen.creative_tabs.MainTab.registerToTab
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
@@ -24,7 +25,7 @@ object ResourceGen {
         )
     }
 
-    val resourceGenBlockItem by FlynResourceGen.ITEMS.registerObject(BLOCK_NAME) {
+    val resourceGenBlockItem by FlynResourceGen.ITEMS.registerToTab(BLOCK_NAME) {
         BlockItem(
             resourceGenBlock,
             Item.Properties()
