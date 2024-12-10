@@ -1,0 +1,52 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "particle": "minecraft:block/glass",
+    "material": "minecraft:block/acacia_log",
+    "glass": "minecraft:block/glass"
+  },
+  "render_type": "cutout",
+  "elements": [
+    {
+      "from": [0, 0, 0],
+      "to": [16, 4, 16],
+      "faces": {
+        "up": {"texture":  "#material"},
+        "down": {"texture":  "#material", "cullface":  "down"},
+        "east": {"texture":  "#material", "cullface":  "east"},
+        "west": {"texture":  "#material", "cullface":  "west"},
+        "south": {"texture":  "#material", "cullface":  "south"},
+        "north": {"texture":  "#material", "cullface":  "north"}
+      }
+    }, {
+      "from": [0, 12, 0],
+      "to": [16, 16, 16],
+      "faces": {
+        "up": {"texture":  "#material", "cullface":  "up"},
+        "down": {"texture":  "#material"},
+        "east": {"texture":  "#material", "cullface":  "east"},
+        "west": {"texture":  "#material", "cullface":  "west"},
+        "south": {"texture":  "#material", "cullface":  "south"},
+        "north": {"texture":  "#material", "cullface":  "north"}
+      }
+    }, {
+      "from": [0, 4, 0],
+      "to": [16, 12, 16],
+      "faces": {
+        "east": {"texture":  "#glass", "cullface":  "east"},
+        "west": {"texture":  "#glass", "cullface":  "west"},
+        "south": {"texture":  "#glass", "cullface":  "south"},
+        "north": {"texture":  "#glass", "cullface":  "north"}
+      }
+    }, {
+      "from": [1, 4, 1],
+      "to": [15, 12, 15],
+      "faces": {
+        "east": {"texture":  "#glass", "cullface":  "east"},
+        "west": {"texture":  "#glass", "cullface":  "west"},
+        "south": {"texture":  "#glass", "cullface":  "south"},
+        "north": {"texture":  "#glass", "cullface":  "north"}
+      }
+    }
+  ]
+}
