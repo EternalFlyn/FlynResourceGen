@@ -1,0 +1,27 @@
+{
+  "parent": "block/block",
+  "render_type": "cutout",
+  "elements": [
+    {
+      "from": [1, 4, 1],
+      "to": [15, 9, 5],
+      "shade": false,
+      "faces": {
+        "up": { "texture": "#fluidL" },
+        "east": { "texture": "#fluidL" },
+        "west": { "texture": "#fluidL" },
+        "north": { "texture": "#fluidL" }
+      }
+    }, {
+      "from": [1, 4, 11],
+      "to": [15, 9, 15],
+      "shade": false,
+      "faces": {
+        "up": { "texture": "#fluidR" },
+        "east": { "texture": "#fluidR" },
+        "west": { "texture": "#fluidR" },
+        "south": { "texture": "#fluidR" }
+      }
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "parent": "flyn_resource_gen:block/resource_gen_block",
+  "textures": {
+    "material": "minecraft:block/iron_block"
+  }
+}
