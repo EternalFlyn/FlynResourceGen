@@ -1,7 +1,21 @@
 {
-  "parent": "flyn_resource_gen:block/resource_gen_fluid",
+  "parent": "block/block",
   "textures": {
-    "fluidL": "minecraft:block/water_still",
-    "fluidR": "minecraft:block/water_still"
-  }
+    "fluid": "minecraft:block/water_still"
+  },
+  "render_type": "cutout",
+  "elements": [
+    {
+      "from": [1, 4, 1],
+      "to": [15, 9, 5],
+      "shade": false,
+      "faces": {
+        "up": { "texture": "#fluid", "tintindex": 0 },
+        "east": { "texture": "#fluid", "tintindex": 0 },
+        "west": { "texture": "#fluid", "tintindex": 0 },
+        "north": { "texture": "#fluid", "tintindex": 0 },
+        "south": { "texture": "#fluid", "tintindex": 0 }
+      }
+    }
+  ]
 }

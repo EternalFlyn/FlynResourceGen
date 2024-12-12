@@ -1,5 +1,6 @@
 package com.flyn.flyn_resource_gen
 
+import com.flyn.flyn_resource_gen.init.BlockEntityInit
 import com.flyn.flyn_resource_gen.init.BlockInit
 import com.flyn.flyn_resource_gen.init.ItemInit
 import com.flyn.flyn_resource_gen.init.TabInit
@@ -27,6 +28,7 @@ object FlynResourceGen {
         BlockInit.register()
         ItemInit.register()
         TabInit.register()
+        BlockEntityInit.register()
 
         runForDist(
             clientTarget = {
@@ -55,8 +57,6 @@ object FlynResourceGen {
     private fun onClientSetup(event: FMLClientSetupEvent) {
         // Some client setup code
         LOGGER.info("Initializing client...")
-//        val blockColors = Minecraft.getInstance().blockColors
-//        blockColors.register({ state, world, pos, tintIndex ->  }, BlockInit.RESOURCE_GEN_BLOCK)
     }
 
     @Suppress("UNUSED_PARAMETER")

@@ -1,7 +1,21 @@
 {
-  "parent": "flyn_resource_gen:block/resource_gen_fluid",
+  "parent": "block/block",
   "textures": {
-    "fluidL": "minecraft:block/lava_still",
-    "fluidR": "minecraft:block/lava_still"
-  }
+    "fluid": "minecraft:block/lava_still"
+  },
+  "render_type": "cutout",
+  "elements": [
+    {
+      "from": [1, 4, 1],
+      "to": [15, 9, 5],
+      "shade": false,
+      "faces": {
+        "up": { "texture": "#fluid" },
+        "east": { "texture": "#fluid" },
+        "west": { "texture": "#fluid" },
+        "north": { "texture": "#fluid" },
+        "south": { "texture": "#fluid" }
+      }
+    }
+  ]
 }

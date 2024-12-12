@@ -16,14 +16,17 @@
       "when": { "tier": "5" },
       "apply": { "model": "flyn_resource_gen:block/resource_gen_block_t5" }
     }, {
-      "when": { "fluid": "water" },
+      "when": { "fluid_l": "water" },
       "apply": { "model": "flyn_resource_gen:block/resource_gen_fluid_water" }
     }, {
-      "when": { "fluid": "mixed" },
-      "apply": { "model": "flyn_resource_gen:block/resource_gen_fluid_mixed" }
-    }, {
-      "when": { "fluid": "lava" },
+      "when": { "fluid_l": "lava" },
       "apply": { "model": "flyn_resource_gen:block/resource_gen_fluid_lava" }
+    }, {
+      "when": { "fluid_r": "water" },
+      "apply": { "model": "flyn_resource_gen:block/resource_gen_fluid_water", "y": 180 }
+    }, {
+      "when": { "fluid_r": "lava" },
+      "apply": { "model": "flyn_resource_gen:block/resource_gen_fluid_lava", "y": 180 }
     }
   ]
 }
