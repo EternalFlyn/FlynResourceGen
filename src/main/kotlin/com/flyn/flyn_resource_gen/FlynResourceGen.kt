@@ -1,9 +1,8 @@
 package com.flyn.flyn_resource_gen
 
-import net.minecraft.core.registries.Registries
-import net.minecraft.world.item.CreativeModeTab
-import net.minecraft.world.item.Item
-import net.minecraft.world.level.block.Block
+import com.flyn.flyn_resource_gen.init.BlockInit
+import com.flyn.flyn_resource_gen.init.ItemInit
+import com.flyn.flyn_resource_gen.init.TabInit
 import net.minecraftforge.eventbus.api.SubscribeEvent
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber
@@ -12,8 +11,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent
 import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent
-import net.minecraftforge.registries.DeferredRegister
-import net.minecraftforge.registries.ForgeRegistries
 import org.apache.logging.log4j.LogManager
 import thedarkcolour.kotlinforforge.forge.LOADING_CONTEXT
 import thedarkcolour.kotlinforforge.forge.MOD_BUS
@@ -26,15 +23,10 @@ object FlynResourceGen {
     const val MOD_ID = "flyn_resource_gen"
     val LOGGER = LogManager.getLogger(MOD_ID)
 
-    val BLOCKS: DeferredRegister<Block> = DeferredRegister.create(ForgeRegistries.BLOCKS, MOD_ID)
-    val ITEMS: DeferredRegister<Item> = DeferredRegister.create(ForgeRegistries.ITEMS, MOD_ID)
-    val CREATIVE_MODE_TABS: DeferredRegister<CreativeModeTab> =
-        DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MOD_ID)
-
     init {
-        BLOCKS.register(MOD_BUS)
-        ITEMS.register(MOD_BUS)
-        CREATIVE_MODE_TABS.register(MOD_BUS)
+        BlockInit.register()
+        ItemInit.register()
+        TabInit.register()
 
         runForDist(
             clientTarget = {
@@ -63,6 +55,8 @@ object FlynResourceGen {
     private fun onClientSetup(event: FMLClientSetupEvent) {
         // Some client setup code
         LOGGER.info("Initializing client...")
+//        val blockColors = Minecraft.getInstance().blockColors
+//        blockColors.register({ state, world, pos, tintIndex ->  }, BlockInit.RESOURCE_GEN_BLOCK)
     }
 
     @Suppress("UNUSED_PARAMETER")
