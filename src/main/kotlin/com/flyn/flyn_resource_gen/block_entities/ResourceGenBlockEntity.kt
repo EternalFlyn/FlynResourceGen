@@ -108,7 +108,6 @@ class ResourceGenBlockEntity(pos: BlockPos, private val state: BlockState) : Blo
         } else {
             stack.count = min(stack.count + amount, maxCount)
         }
-        FlynResourceGen.LOGGER.info(stack)
     }
 
     private fun push() {

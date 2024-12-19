@@ -1,9 +1,6 @@
 package com.flyn.flyn_resource_gen
 
-import com.flyn.flyn_resource_gen.init.BlockEntityInit
-import com.flyn.flyn_resource_gen.init.BlockInit
-import com.flyn.flyn_resource_gen.init.ItemInit
-import com.flyn.flyn_resource_gen.init.TabInit
+import com.flyn.flyn_resource_gen.init.*
 import net.minecraftforge.eventbus.api.SubscribeEvent
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber
@@ -29,6 +26,7 @@ object FlynResourceGen {
         ItemInit.register()
         TabInit.register()
         BlockEntityInit.register()
+        RecipeInit.register()
 
         runForDist(
             clientTarget = {
@@ -50,7 +48,7 @@ object FlynResourceGen {
     @SubscribeEvent
     @Suppress("UNUSED_PARAMETER")
     fun onLoadComplete(event: FMLLoadCompleteEvent) {
-        LOGGER.info("Items: ${Config.canGenerateItems}")
+        LOGGER.info("Items: ${Config.canGenerateBlocks}")
     }
 
     @Suppress("UNUSED_PARAMETER")
