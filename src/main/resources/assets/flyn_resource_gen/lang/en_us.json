@@ -1,5 +1,6 @@
 {
   "block.flyn_resource_gen.resource_gen_block": "Resource Gen",
   "item.flyn_resource_gen.resource_gen_block": "Resource Gen",
+  "item.flyn_resource_gen.resource_gen_block_variant": "%s Gen Tier %s",
   "itempGroup.flyn_resource_gen": "Flyn Resource Gen"
 }
