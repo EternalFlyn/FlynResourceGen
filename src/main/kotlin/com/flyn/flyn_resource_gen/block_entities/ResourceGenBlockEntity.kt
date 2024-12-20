@@ -4,6 +4,10 @@ import com.flyn.flyn_resource_gen.FlynResourceGen
 import com.flyn.flyn_resource_gen.blocks.ResourceGenBlock
 import com.flyn.flyn_resource_gen.getItemId
 import com.flyn.flyn_resource_gen.init.BlockEntityInit
+import com.flyn.flyn_resource_gen.misc.ResourceGenNbt
+import com.flyn.flyn_resource_gen.misc.get
+import com.flyn.flyn_resource_gen.misc.put
+import com.flyn.flyn_resource_gen.misc.thisModTag
 import com.flyn.flyn_resource_gen.putItemId
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
@@ -26,8 +30,6 @@ class ResourceGenBlockEntity(pos: BlockPos, private val state: BlockState) : Blo
 ), TickableBlockEntity {
 
     companion object {
-        const val NBT_LABEL_COUNT = "count"
-        const val NBT_LABEL_PRODUCT = "product"
 
         private val GEN_PROPERTY = List(5) { index ->
             (1 shl index) to (64 shl index shl index)
@@ -121,21 +123,21 @@ class ResourceGenBlockEntity(pos: BlockPos, private val state: BlockState) : Blo
 
     override fun load(nbt: CompoundTag) {
         super.load(nbt)
-        val data = nbt.getCompound(FlynResourceGen.MOD_ID)
-        product = data.getItemId(NBT_LABEL_PRODUCT)
+        val data = nbt.thisModTag
+        product = data.get(ResourceGenNbt.Product)
         inventory.setStackInSlot(0, ItemStack(product).apply {
-            count = data.getInt(NBT_LABEL_COUNT)
+            count = data.get(ResourceGenNbt.Count)
         })
     }
 
     override fun saveAdditional(nbt: CompoundTag) {
         super.saveAdditional(nbt)
-        val data = CompoundTag()
-        data.putItemId(NBT_LABEL_PRODUCT, product)
-        inventory.getStackInSlot(0).run {
-            data.putInt(NBT_LABEL_COUNT, count)
+        nbt.thisModTag = CompoundTag().apply {
+            put(ResourceGenNbt.Product, product)
+            inventory.getStackInSlot(0).run {
+                put(ResourceGenNbt.Count, count)
+            }
         }
-        nbt.put(FlynResourceGen.MOD_ID, data)
     }
 
     override fun tick() {

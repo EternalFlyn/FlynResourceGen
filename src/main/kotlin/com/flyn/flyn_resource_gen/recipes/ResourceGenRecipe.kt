@@ -1,10 +1,13 @@
 package com.flyn.flyn_resource_gen.recipes
 
-import com.flyn.flyn_resource_gen.*
-import com.flyn.flyn_resource_gen.FlynResourceGen.MOD_ID
+import com.flyn.flyn_resource_gen.Config
 import com.flyn.flyn_resource_gen.init.ItemInit
 import com.flyn.flyn_resource_gen.init.RecipeInit
-import com.flyn.flyn_resource_gen.misc.ResourceGenType
+import com.flyn.flyn_resource_gen.misc.ResourceGenNbt
+import com.flyn.flyn_resource_gen.misc.get
+import com.flyn.flyn_resource_gen.misc.put
+import com.flyn.flyn_resource_gen.misc.thisModTag
+import com.flyn.flyn_resource_gen.setTag
 import net.minecraft.core.RegistryAccess
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.resources.ResourceLocation
@@ -28,6 +31,7 @@ class ResourceGenRecipe(
                 && predicate(get(6)) && predicate(get(8))
     }
 
+    // TODO(add the tier 6)
     private fun List<ItemStack>.isFrameMatch(tier: Int): Boolean {
         return when (tier) {
             0 -> isFrameMatch { it.`is`(ItemTags.LOGS) }
@@ -35,24 +39,15 @@ class ResourceGenRecipe(
             2 -> isFrameMatch { it.`is`(Items.IRON_BLOCK) }
             3 -> isFrameMatch { it.`is`(Items.GOLD_BLOCK) }
             4 -> isFrameMatch { it.`is`(Items.DIAMOND_BLOCK) }
-            5 -> isFrameMatch { it.`is`(Items.NETHERITE_BLOCK) }
+//            5 -> isFrameMatch { it.`is`(Items.NETHERITE_BLOCK) }
             else -> false
         }
     }
 
     private fun List<ItemStack>.isFluidMatch(item: Item): Boolean {
-        return when (Config.canGenerateBlocks[item]) {
-            ResourceGenType.WATER -> {
-                this[3].`is`(Items.WATER_BUCKET) && this[5].`is`(Items.WATER_BUCKET)
-            }
-            ResourceGenType.LAVA -> {
-                this[3].`is`(Items.LAVA_BUCKET) && this[5].`is`(Items.LAVA_BUCKET)
-            }
-            ResourceGenType.MIXED -> {
-                this[3].`is`(Items.WATER_BUCKET) && this[5].`is`(Items.LAVA_BUCKET)
-            }
-            null -> false
-        }
+        return Config.canGenerateBlocks[item]?.let { type ->
+            this[3].`is`(type.fluidL.fluid.bucket) && this[5].`is`(type.fluidR.fluid.bucket)
+        } ?: false
     }
 
     override fun matches(container: CraftingContainer, level: Level): Boolean {
@@ -62,13 +57,9 @@ class ResourceGenRecipe(
             val core = this[7]
             // the core is the resource generator
             if (core.`is`(ItemInit.RESOURCE_GEN_BLOCK_ITEM)) {
-                try {
-                    val tier = core.tag!!.getCompound(MOD_ID).getInt("tier")
-                    val product = core.tag!!.getCompound(MOD_ID).getItemId("product")
-                    return isFrameMatch(tier) && isFluidMatch(product)
-                } catch (e: Exception) {
-                    return false
-                }
+                val tier = core.thisModTag.get(ResourceGenNbt.Tier)
+                val product = core.thisModTag.get(ResourceGenNbt.Product)
+                return isFrameMatch(tier) && isFluidMatch(product)
             }
             // the core can be generated
             if (Config.canGenerateBlocks.containsKey(core.item)) {
@@ -83,18 +74,18 @@ class ResourceGenRecipe(
         val product: Item
         with (container.items[7]) {
             if (`is`(ItemInit.RESOURCE_GEN_BLOCK_ITEM)) {
-                tier = tag!!.getCompound(MOD_ID).getInt("tier") + 1
-                product = tag!!.getCompound(MOD_ID).getItemId("product")
+                tier = thisModTag.get(ResourceGenNbt.Tier) + 1
+                product = thisModTag.get(ResourceGenNbt.Product)
             } else {
                 product = item
             }
         }
         return ItemStack(ItemInit.RESOURCE_GEN_BLOCK_ITEM).setTag {
             val data = CompoundTag().apply {
-                putInt("tier", tier)
-                putItemId("product", product)
+                put(ResourceGenNbt.Tier, tier)
+                put(ResourceGenNbt.Product, product)
             }
-            put(MOD_ID, data)
+            thisModTag = data
         }
     }
 
