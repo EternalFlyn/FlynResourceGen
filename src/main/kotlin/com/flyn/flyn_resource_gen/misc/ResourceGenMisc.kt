@@ -56,9 +56,11 @@ var CompoundTag.thisModTag: CompoundTag
     }
 
 var ItemStack.thisModTag: CompoundTag
-    get() = if (this.tag != null) tag!!.thisModTag else CompoundTag()
+    get() = this.getOrCreateTagElement(MOD_ID)
     set(tag) {
-        this.getOrCreateTagElement(MOD_ID).thisModTag = tag
+        if (this.tag == null)
+            this.tag = CompoundTag()
+        this.tag!!.put(MOD_ID, tag)
     }
 
 fun <T> CompoundTag.put(tag: ResourceGenNbt<T>, value: T) {

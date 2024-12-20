@@ -27,6 +27,7 @@ object FlynResourceGen {
         TabInit.register()
         BlockEntityInit.register()
         RecipeInit.register()
+        LootFunctionInit.register()
 
         runForDist(
             clientTarget = {

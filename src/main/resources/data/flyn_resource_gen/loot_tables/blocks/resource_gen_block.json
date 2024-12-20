@@ -9,6 +9,11 @@
           "type": "minecraft:item",
           "name": "flyn_resource_gen:resource_gen_block"
         }
+      ],
+      "functions": [
+        {
+          "function": "flyn_resource_gen:set_gen_property"
+        }
       ]
     }
   ]

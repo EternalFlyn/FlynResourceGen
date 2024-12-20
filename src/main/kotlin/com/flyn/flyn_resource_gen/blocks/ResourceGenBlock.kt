@@ -2,13 +2,11 @@ package com.flyn.flyn_resource_gen.blocks
 
 import com.flyn.flyn_resource_gen.Config
 import com.flyn.flyn_resource_gen.FlynResourceGen
+import com.flyn.flyn_resource_gen.block_entities.ResourceGenBlockEntity
 import com.flyn.flyn_resource_gen.block_entities.getTickerHelper
 import com.flyn.flyn_resource_gen.init.BlockEntityInit.RESOURCE_GEN_BLOCK_ENTITY
 import com.flyn.flyn_resource_gen.init.BlockInit
-import com.flyn.flyn_resource_gen.misc.ResourceGenFluid
-import com.flyn.flyn_resource_gen.misc.ResourceGenNbt
-import com.flyn.flyn_resource_gen.misc.get
-import com.flyn.flyn_resource_gen.misc.thisModTag
+import com.flyn.flyn_resource_gen.misc.*
 import net.minecraft.client.renderer.BiomeColors
 import net.minecraft.core.BlockPos
 import net.minecraft.world.entity.LivingEntity
@@ -30,12 +28,13 @@ import net.minecraftforge.client.event.RegisterColorHandlersEvent
 import net.minecraftforge.eventbus.api.SubscribeEvent
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber
 
-class ResourceGenBlock(properties: Properties) : Block(properties), EntityBlock {
+class ResourceGenBlock(properties: Properties) : Block(properties), EntityBlock,
+    AdditionDropData<ResourceGenBlockEntity> {
 
     @EventBusSubscriber(modid = FlynResourceGen.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = [Dist.CLIENT])
     companion object {
 
-        const val BLOCK_NAME = "resource_gen_block.json"
+        const val BLOCK_NAME = "resource_gen_block"
 
         val TIER = IntegerProperty.create("tier", 1, 5)
         val FLUID_L = EnumProperty.create("fluid_l", ResourceGenFluid::class.java)
@@ -96,7 +95,7 @@ class ResourceGenBlock(properties: Properties) : Block(properties), EntityBlock 
 
     override fun getStateForPlacement(context: BlockPlaceContext): BlockState? {
         var result = defaultBlockState()
-        with (context.itemInHand.thisModTag) {
+        with(context.itemInHand.thisModTag) {
             get(ResourceGenNbt.Tier)
                 .coerceAtLeast(1)
                 .let { result = result.setValue(TIER, it) }
@@ -115,8 +114,16 @@ class ResourceGenBlock(properties: Properties) : Block(properties), EntityBlock 
     ) {
         level.getBlockEntity(pos, RESOURCE_GEN_BLOCK_ENTITY).ifPresent { blockEntity ->
             val product = stack.thisModTag.get(ResourceGenNbt.Product)
-            blockEntity.setProduct(product)
+            blockEntity.product = product
         }
+    }
+
+    override fun addDropData(stack: ItemStack, blockEntity: ResourceGenBlockEntity): ItemStack {
+        stack.thisModTag.apply {
+            put(ResourceGenNbt.Tier, blockEntity.tier)
+            put(ResourceGenNbt.Product, blockEntity.product)
+        }
+         return stack
     }
 
 }

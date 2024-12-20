@@ -1,18 +1,14 @@
 package com.flyn.flyn_resource_gen.block_entities
 
-import com.flyn.flyn_resource_gen.FlynResourceGen
 import com.flyn.flyn_resource_gen.blocks.ResourceGenBlock
-import com.flyn.flyn_resource_gen.getItemId
 import com.flyn.flyn_resource_gen.init.BlockEntityInit
 import com.flyn.flyn_resource_gen.misc.ResourceGenNbt
 import com.flyn.flyn_resource_gen.misc.get
 import com.flyn.flyn_resource_gen.misc.put
 import com.flyn.flyn_resource_gen.misc.thisModTag
-import com.flyn.flyn_resource_gen.putItemId
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.nbt.CompoundTag
-import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.level.block.entity.BlockEntity
@@ -37,12 +33,13 @@ class ResourceGenBlockEntity(pos: BlockPos, private val state: BlockState) : Blo
 
     }
 
-    private val tier
-        get() = state.getValue(ResourceGenBlock.TIER) - 1
+    val tier
+        get() = state.getValue(ResourceGenBlock.TIER)
+    var product = Items.AIR
     private val inventory = object: ItemStackHandler(1) {
 
         override fun getSlotLimit(slot: Int): Int {
-            return GEN_PROPERTY[tier].second
+            return GEN_PROPERTY[tier - 1].second
         }
 
         override fun onContentsChanged(slot: Int) {
@@ -61,12 +58,7 @@ class ResourceGenBlockEntity(pos: BlockPos, private val state: BlockState) : Blo
     }
     private val optional = LazyOptional.of { inventory }
     private var upContainer: LazyOptional<IItemHandler>? = null
-    private var product = Items.AIR
     private var ticks = 0
-
-    fun setProduct(item: Item) {
-        product = item
-    }
 
     fun getProduct(): ItemStack {
         val stack = inventory.getStackInSlot(0)
@@ -104,7 +96,7 @@ class ResourceGenBlockEntity(pos: BlockPos, private val state: BlockState) : Blo
 
     private fun growFromTier() {
         val stack = inventory.getStackInSlot(0)
-        val (amount, maxCount) = GEN_PROPERTY[tier]
+        val (amount, maxCount) = GEN_PROPERTY[tier - 1]
         if (stack.isEmpty) {
             inventory.setStackInSlot(0, ItemStack(product).apply { count = amount })
         } else {
