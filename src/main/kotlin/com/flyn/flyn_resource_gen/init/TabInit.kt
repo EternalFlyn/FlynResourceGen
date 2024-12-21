@@ -1,6 +1,7 @@
 package com.flyn.flyn_resource_gen.init
 
 import com.flyn.flyn_resource_gen.Config
+import com.flyn.flyn_resource_gen.blocks.ResourceGenBlock
 import com.flyn.flyn_resource_gen.misc.ResourceGenNbt
 import com.flyn.flyn_resource_gen.misc.put
 import com.flyn.flyn_resource_gen.misc.thisModTag
@@ -25,7 +26,7 @@ object TabInit : Initializer<CreativeModeTab>(Registries.CREATIVE_MODE_TAB) {
             }
             displayItems { _, output ->
                 val items = mutableListOf<ItemStack>()
-                for (i in 1..5) {
+                for (i in 1..ResourceGenBlock.MAX_TIER) {
                     items += Config.canGenerateBlocks.keys.map {
                         ItemStack(ItemInit.RESOURCE_GEN_BLOCK_ITEM, 1).setTag {
                             val data = CompoundTag().apply {

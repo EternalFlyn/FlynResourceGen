@@ -31,7 +31,6 @@ class ResourceGenRecipe(
                 && predicate(get(6)) && predicate(get(8))
     }
 
-    // TODO(add the tier 6)
     private fun List<ItemStack>.isFrameMatch(tier: Int): Boolean {
         return when (tier) {
             0 -> isFrameMatch { it.`is`(ItemTags.LOGS) }
@@ -39,7 +38,7 @@ class ResourceGenRecipe(
             2 -> isFrameMatch { it.`is`(Items.IRON_BLOCK) }
             3 -> isFrameMatch { it.`is`(Items.GOLD_BLOCK) }
             4 -> isFrameMatch { it.`is`(Items.DIAMOND_BLOCK) }
-//            5 -> isFrameMatch { it.`is`(Items.NETHERITE_BLOCK) }
+            5 -> isFrameMatch { it.`is`(Items.NETHERITE_BLOCK) }
             else -> false
         }
     }

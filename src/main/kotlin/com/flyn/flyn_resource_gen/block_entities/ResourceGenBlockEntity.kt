@@ -27,7 +27,7 @@ class ResourceGenBlockEntity(pos: BlockPos, private val state: BlockState) : Blo
 
     companion object {
 
-        private val GEN_PROPERTY = List(5) { index ->
+        private val GEN_PROPERTY = List(ResourceGenBlock.MAX_TIER) { index ->
             (1 shl index) to (64 shl index shl index)
         }
 

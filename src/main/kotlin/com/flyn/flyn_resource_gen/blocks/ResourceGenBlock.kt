@@ -35,8 +35,9 @@ class ResourceGenBlock(properties: Properties) : Block(properties), EntityBlock,
     companion object {
 
         const val BLOCK_NAME = "resource_gen_block"
+        const val MAX_TIER = 6
 
-        val TIER = IntegerProperty.create("tier", 1, 5)
+        val TIER = IntegerProperty.create("tier", 1, MAX_TIER)
         val FLUID_L = EnumProperty.create("fluid_l", ResourceGenFluid::class.java)
         val FLUID_R = EnumProperty.create("fluid_r", ResourceGenFluid::class.java)
 
