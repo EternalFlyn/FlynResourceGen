@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.BiomeColors
 import net.minecraft.core.BlockPos
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.player.Player
+import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.level.Level
@@ -36,13 +37,14 @@ class ResourceGenBlock(properties: Properties) : Block(properties), EntityBlock,
         const val BLOCK_NAME = "resource_gen_block"
         const val DEFAULT_TIER = 1
         const val MAX_TIER = 6
-        val DEFAULT_ITEM = Items.AIR
+        val DEFAULT_ITEM: Item = Items.AIR
 
         @SubscribeEvent
         fun registerWaterColor(event: RegisterColorHandlersEvent.Block) {
-            event.blockColors.register({ _, world, pos, _ ->
-                if (world == null || pos == null) return@register 0xFFFFFF
-                world.getBlockTint(pos, BiomeColors.WATER_COLOR_RESOLVER)
+            event.register({ _, world, pos, index ->
+                if (world == null || pos == null || index != 1)
+                    return@register -1
+                BiomeColors.getAverageWaterColor(world, pos)
             }, BlockInit.RESOURCE_GEN_BLOCK)
         }
 
