@@ -21,7 +21,7 @@ import net.minecraftforge.items.ItemHandlerHelper
 import net.minecraftforge.items.ItemStackHandler
 import kotlin.math.min
 
-class ResourceGenBlockEntity(pos: BlockPos, private val state: BlockState) : BlockEntity(
+class ResourceGenBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
     BlockEntityInit.RESOURCE_GEN_BLOCK_ENTITY, pos, state
 ), TickableBlockEntity {
 
@@ -33,9 +33,8 @@ class ResourceGenBlockEntity(pos: BlockPos, private val state: BlockState) : Blo
 
     }
 
-    val tier
-        get() = state.getValue(ResourceGenBlock.TIER)
-    var product = Items.AIR
+    var tier = ResourceGenBlock.DEFAULT_TIER
+    var product = ResourceGenBlock.DEFAULT_ITEM
     private val inventory = object: ItemStackHandler(1) {
 
         override fun getSlotLimit(slot: Int): Int {
@@ -116,6 +115,7 @@ class ResourceGenBlockEntity(pos: BlockPos, private val state: BlockState) : Blo
     override fun load(nbt: CompoundTag) {
         super.load(nbt)
         val data = nbt.thisModTag
+        tier = data.get(ResourceGenNbt.Tier)
         product = data.get(ResourceGenNbt.Product)
         inventory.setStackInSlot(0, ItemStack(product).apply {
             count = data.get(ResourceGenNbt.Count)
@@ -125,6 +125,7 @@ class ResourceGenBlockEntity(pos: BlockPos, private val state: BlockState) : Blo
     override fun saveAdditional(nbt: CompoundTag) {
         super.saveAdditional(nbt)
         nbt.thisModTag = CompoundTag().apply {
+            put(ResourceGenNbt.Tier, tier)
             put(ResourceGenNbt.Product, product)
             inventory.getStackInSlot(0).run {
                 put(ResourceGenNbt.Count, count)
