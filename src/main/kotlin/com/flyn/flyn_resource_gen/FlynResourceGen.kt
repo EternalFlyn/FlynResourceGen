@@ -1,6 +1,8 @@
 package com.flyn.flyn_resource_gen
 
 import com.flyn.flyn_resource_gen.init.*
+import com.flyn.flyn_resource_gen.render.ResourceGenUnbakedModel
+import net.minecraftforge.client.event.ModelEvent
 import net.minecraftforge.eventbus.api.SubscribeEvent
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber
@@ -32,6 +34,7 @@ object FlynResourceGen {
         runForDist(
             clientTarget = {
                 MOD_BUS.addListener(::onClientSetup)
+                MOD_BUS.addListener(::onModelRegistry)
             }, serverTarget = {
                 MOD_BUS.addListener(::onServerSetup)
             }
@@ -61,6 +64,10 @@ object FlynResourceGen {
     @Suppress("UNUSED_PARAMETER")
     private fun onServerSetup(event: FMLDedicatedServerSetupEvent) {
         LOGGER.info("Server starting...")
+    }
+
+    private fun onModelRegistry(event : ModelEvent.RegisterGeometryLoaders) {
+        event.register("resource_gen_block", ResourceGenUnbakedModel.Loader)
     }
 
 }

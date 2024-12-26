@@ -1,0 +1,17 @@
+{
+  "parent": "block/block",
+  "render_type": "cutout",
+  "elements": [
+    {
+      "from": [1, 4, 5],
+      "to": [15, 9, 11],
+      "faces": {
+        "up": { "texture": "#material" },
+        "east": { "texture": "#material" },
+        "west": { "texture": "#material" },
+        "south": { "texture": "#material" },
+        "north": { "texture": "#material" }
+      }
+    }
+  ]
+}

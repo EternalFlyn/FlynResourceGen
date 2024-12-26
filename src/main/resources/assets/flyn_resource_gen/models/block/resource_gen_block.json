@@ -1,51 +1,17 @@
 {
-  "parent": "block/block",
-  "textures": {
-    "particle": "minecraft:block/glass",
-    "glass": "minecraft:block/glass"
+  "loader": "flyn_resource_gen:resource_gen_block",
+  "frame_model": "flyn_resource_gen:block/resource_gen_part/frame",
+  "fluid_model": {
+    "water": "flyn_resource_gen:block/resource_gen_part/fluid_water",
+    "lava": "flyn_resource_gen:block/resource_gen_part/fluid_lava"
   },
-  "render_type": "cutout",
-  "elements": [
-    {
-      "from": [0, 0, 0],
-      "to": [16, 4, 16],
-      "faces": {
-        "up": { "texture": "#material" },
-        "down": { "texture": "#material", "cullface": "down" },
-        "east": { "texture": "#material", "cullface": "east" },
-        "west": { "texture": "#material", "cullface": "west" },
-        "south": { "texture": "#material", "cullface": "south" },
-        "north": { "texture": "#material", "cullface": "north" }
-      }
-    }, {
-      "from": [0, 12, 0],
-      "to": [16, 16, 16],
-      "faces": {
-        "up": { "texture": "#material", "cullface": "up" },
-        "down": { "texture": "#material" },
-        "east": { "texture": "#material", "cullface": "east" },
-        "west": { "texture": "#material", "cullface": "west" },
-        "south": { "texture": "#material", "cullface": "south" },
-        "north": { "texture": "#material", "cullface": "north" }
-      }
-    }, {
-      "from": [0, 4, 0],
-      "to": [16, 12, 16],
-      "faces": {
-        "east": { "texture": "#glass", "cullface": "east" },
-        "west": { "texture": "#glass", "cullface": "west" },
-        "south": { "texture": "#glass", "cullface": "south" },
-        "north": { "texture": "#glass", "cullface": "north" }
-      }
-    }, {
-      "from": [1, 4, 1],
-      "to": [15, 12, 15],
-      "faces": {
-        "east": { "texture": "#glass", "cullface": "east" },
-        "west": { "texture": "#glass", "cullface": "west" },
-        "south": { "texture": "#glass", "cullface": "south" },
-        "north": { "texture": "#glass", "cullface": "north" }
-      }
-    }
+  "product_model": "flyn_resource_gen:block/resource_gen_part/product",
+  "tier_textures": [
+    "minecraft:block/acacia_log",
+    "minecraft:block/cobblestone",
+    "minecraft:block/iron_block",
+    "minecraft:block/gold_block",
+    "minecraft:block/diamond_block",
+    "minecraft:block/netherite_block"
   ]
 }

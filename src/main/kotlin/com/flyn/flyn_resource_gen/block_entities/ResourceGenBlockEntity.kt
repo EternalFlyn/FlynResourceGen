@@ -115,7 +115,7 @@ class ResourceGenBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
     override fun load(nbt: CompoundTag) {
         super.load(nbt)
         val data = nbt.thisModTag
-        tier = data.get(ResourceGenNbt.Tier)
+        tier = data.get(ResourceGenNbt.Tier).coerceAtLeast(1)
         product = data.get(ResourceGenNbt.Product)
         inventory.setStackInSlot(0, ItemStack(product).apply {
             count = data.get(ResourceGenNbt.Count)

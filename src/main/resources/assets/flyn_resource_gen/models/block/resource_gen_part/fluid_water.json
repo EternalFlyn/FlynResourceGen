@@ -1,0 +1,21 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "fluid": "minecraft:block/water_still"
+  },
+  "render_type": "cutout",
+  "elements": [
+    {
+      "from": [1, 4, 1],
+      "to": [15, 9, 5],
+      "shade": false,
+      "faces": {
+        "up": { "texture": "#fluid", "tintindex": 1 },
+        "east": { "texture": "#fluid", "tintindex": 1 },
+        "west": { "texture": "#fluid", "tintindex": 1 },
+        "north": { "texture": "#fluid", "tintindex": 1 },
+        "south": { "texture": "#fluid", "tintindex": 1 }
+      }
+    }
+  ]
+}
