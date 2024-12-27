@@ -151,4 +151,19 @@ class ResourceGenBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
         optional.invalidate()
     }
 
+    override fun getUpdateTag(): CompoundTag {
+        val nbt = super.getUpdateTag()
+        nbt.thisModTag = CompoundTag().apply {
+            put(ResourceGenNbt.Tier, tier)
+            put(ResourceGenNbt.Product, product)
+        }
+        return nbt
+    }
+
+    override fun handleUpdateTag(nbt: CompoundTag) {
+        val data = nbt.thisModTag
+        tier = data.get(ResourceGenNbt.Tier).coerceAtLeast(1)
+        product = data.get(ResourceGenNbt.Product)
+    }
+
 }

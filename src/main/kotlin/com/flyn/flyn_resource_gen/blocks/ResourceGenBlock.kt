@@ -61,7 +61,6 @@ class ResourceGenBlock(properties: Properties) : Block(properties), EntityBlock,
         if (player.isCrouching) {
             level.getBlockEntity(pos, RESOURCE_GEN_BLOCK_ENTITY).ifPresent {
                 val stack = it.getProduct()
-                FlynResourceGen.LOGGER.info("take $stack")
                 player.inventory.add(stack)
             }
         }
