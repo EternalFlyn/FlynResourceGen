@@ -5,9 +5,13 @@ import com.flyn.flyn_resource_gen.init.BlockInit
 import com.flyn.flyn_resource_gen.init.ItemInit
 import com.flyn.flyn_resource_gen.misc.ResourceGenNbt
 import com.flyn.flyn_resource_gen.misc.get
+import com.flyn.flyn_resource_gen.misc.put
 import com.flyn.flyn_resource_gen.misc.thisModTag
+import com.flyn.flyn_resource_gen.setTag
+import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.BlockItem
+import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraftforge.api.distmarker.Dist
@@ -22,9 +26,19 @@ class ResourceGenItem : BlockItem(BlockInit.RESOURCE_GEN_BLOCK, Properties()) {
 
         private const val PLAINS_WATER_COLOR = 4159204
 
+        fun getItemStack(product: Item, tier: Int): ItemStack {
+            return ItemStack(ItemInit.RESOURCE_GEN_BLOCK_ITEM).setTag {
+                val data = CompoundTag().apply {
+                    put(ResourceGenNbt.Tier, tier)
+                    put(ResourceGenNbt.Product, product)
+                }
+                thisModTag = data
+            }
+        }
+
         @SubscribeEvent
         fun registerWaterColor(event: RegisterColorHandlersEvent.Item) {
-            event.register({ stack, index ->
+            event.register({ _, index ->
                 return@register if (index == 1) PLAINS_WATER_COLOR
                 else -1
             }, ItemInit.RESOURCE_GEN_BLOCK_ITEM)

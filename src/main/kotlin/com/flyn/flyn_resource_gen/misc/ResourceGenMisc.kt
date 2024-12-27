@@ -1,6 +1,8 @@
 package com.flyn.flyn_resource_gen.misc
 
+import com.flyn.flyn_resource_gen.Config
 import com.flyn.flyn_resource_gen.FlynResourceGen.MOD_ID
+import com.flyn.flyn_resource_gen.blocks.ResourceGenBlock
 import com.flyn.flyn_resource_gen.getItemId
 import com.flyn.flyn_resource_gen.misc.ResourceGenNbt.*
 import com.flyn.flyn_resource_gen.putItemId
@@ -34,7 +36,6 @@ enum class ResourceGenType(
 
 enum class ResourceGenFluid(val fluid: Fluid) : StringRepresentable {
 
-    EMPTY(Fluids.EMPTY),
     WATER(Fluids.WATER),
     LAVA(Fluids.LAVA);
 
@@ -77,4 +78,14 @@ fun <T> CompoundTag.get(tag: ResourceGenNbt<T>): T {
         Product -> getItemId(tag.name)
     }
     return result as T
+}
+
+fun <T> allResourceGen(block: (Item, Int) -> T): List<T> {
+    val result = mutableListOf<T>()
+    for (i in 1..ResourceGenBlock.MAX_TIER) {
+        Config.canGenerateBlocks.keys.forEach {
+            result.add(block(it, i))
+        }
+    }
+    return result
 }
