@@ -1,6 +1,6 @@
 package com.flyn.flyn_resource_gen.render
 
-import com.flyn.flyn_resource_gen.Config
+import com.flyn.flyn_resource_gen.config.Config
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonObject
 import com.mojang.datafixers.util.Either
@@ -10,12 +10,13 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.minecraft.client.resources.model.*
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.inventory.InventoryMenu
-import net.minecraft.world.item.Item
+import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.material.Fluid
 import net.minecraft.world.level.material.Fluids
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext
 import net.minecraftforge.client.model.geometry.IGeometryLoader
 import net.minecraftforge.client.model.geometry.IUnbakedGeometry
+import net.minecraftforge.registries.ForgeRegistries
 import java.util.function.Function
 
 class ResourceGenUnbakedModel(
@@ -33,8 +34,8 @@ class ResourceGenUnbakedModel(
         val frameModels = getTierFrame(baker, spriteGetter, modelState, modelLocation, property)
         val fluidModels = getFluid(baker, spriteGetter, modelState, modelLocation, property)
         val oppositeFluidModels = getFluid(baker, spriteGetter, BlockModelRotation.X0_Y180, modelLocation, property)
-        val productModels = getProduct(baker, spriteGetter, modelState, modelLocation, property)
-        return ResourceGenBakedModel(frameModels, fluidModels, oppositeFluidModels, productModels)
+        val coreModels = getCore(baker, spriteGetter, modelState, modelLocation, property)
+        return ResourceGenBakedModel(frameModels, fluidModels, oppositeFluidModels, coreModels)
     }
 
     private fun ResourceLocation.toMaterial() = Material(InventoryMenu.BLOCK_ATLAS, this)
@@ -72,17 +73,18 @@ class ResourceGenUnbakedModel(
         )
     }
 
-    private fun getProduct(
+    private fun getCore(
         baker: ModelBaker,
         spriteGetter: Function<Material, TextureAtlasSprite>,
         modelState: ModelState,
         modelLocation: ResourceLocation,
         property: UnbakedProperty
-    ): Map<Item, BakedModel?> {
-        return Config.canGenerateBlocks.keys.associate { item ->
-            item to baker.getModel(property.productLocation).apply {
+    ): Map<Block, BakedModel?> {
+        return Config.generatorProperty.keys.associateWith { block ->
+            baker.getModel(property.productLocation).apply {
                 if (this is BlockModel) {
-                    val loc = ResourceLocation("block/${item}")
+
+                    val loc = ForgeRegistries.BLOCKS.getKey(block)!!.withPrefix("block/")
                     textureMap[MATERIAL] = Either.left(loc.toMaterial())
                 }
             }.bake(baker, spriteGetter, modelState, modelLocation)

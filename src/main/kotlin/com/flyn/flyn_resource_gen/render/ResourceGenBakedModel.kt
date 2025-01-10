@@ -1,9 +1,9 @@
 package com.flyn.flyn_resource_gen.render
 
-import com.flyn.flyn_resource_gen.Config
 import com.flyn.flyn_resource_gen.DEFAULT_ITEM_TRANSFORMS
-import com.flyn.flyn_resource_gen.blocks.ResourceGenBlock.Companion.DEFAULT_ITEM
+import com.flyn.flyn_resource_gen.blocks.ResourceGenBlock.Companion.EMPTY_CORE
 import com.flyn.flyn_resource_gen.blocks.ResourceGenBlock.Companion.DEFAULT_TIER
+import com.flyn.flyn_resource_gen.config.Config
 import com.flyn.flyn_resource_gen.init.BlockEntityInit
 import com.flyn.flyn_resource_gen.misc.ResourceGenNbt
 import com.flyn.flyn_resource_gen.misc.get
@@ -22,10 +22,10 @@ import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.util.RandomSource
 import net.minecraft.world.entity.LivingEntity
-import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemDisplayContext
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.BlockAndTintGetter
+import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.material.Fluid
 import net.minecraftforge.client.ChunkRenderTypeSet
@@ -40,15 +40,15 @@ class ResourceGenBakedModel(
     private val frameModels: Map<Int, BakedModel?>,
     private val fluidModels: Map<Fluid, BakedModel?>,
     private val oppositeFluidModels: Map<Fluid, BakedModel?>,
-    private val productModels: Map<Item, BakedModel?>
+    private val coreModels: Map<Block, BakedModel?>
 ) : IDynamicBakedModel {
 
     override fun getQuads(
         state: BlockState?, side: Direction?, rand: RandomSource, extraData: ModelData, renderType: RenderType?
     ): List<BakedQuad> {
         val tier = extraData[TIER] ?: DEFAULT_TIER
-        val product = extraData[PRODUCT] ?: DEFAULT_ITEM
-        val key = getBakedKey(tier, product, side)
+        val core = extraData[CORE] ?: EMPTY_CORE
+        val key = getBakedKey(tier, core, side)
         // return the cache if exist
         BAKED_QUADS_CACHE.getIfPresent(key)?.run { return this }
         // construct the baked quads if the hash is not exist
@@ -60,17 +60,17 @@ class ResourceGenBakedModel(
         }
         val result = mutableListOf<BakedQuad>()
         result.addModel(frameModels[tier])
-        Config.canGenerateBlocks[product]?.let { type ->
-            result.addModel(fluidModels[type.fluidL.fluid])
-            result.addModel(oppositeFluidModels[type.fluidR.fluid])
-            result.addModel(productModels[product])
+        Config.generatorProperty[core]?.let { prop ->
+            result.addModel(fluidModels[prop.type.fluidL.fluid])
+            result.addModel(oppositeFluidModels[prop.type.fluidR.fluid])
+            result.addModel(coreModels[core])
         }
         BAKED_QUADS_CACHE.put(key, result)
         return result
     }
 
-    private fun getBakedKey(tier: Int, item: Item, side: Direction?): BakedKey {
-        return BakedKey(tier, item, side?.run { get3DDataValue() + 1 } ?: 0)
+    private fun getBakedKey(tier: Int, block: Block, side: Direction?): BakedKey {
+        return BakedKey(tier, block, side?.run { get3DDataValue() + 1 } ?: 0)
     }
 
     override fun useAmbientOcclusion(): Boolean = false
@@ -98,7 +98,7 @@ class ResourceGenBakedModel(
         return level.getBlockEntity(pos, BlockEntityInit.RESOURCE_GEN_BLOCK_ENTITY).map { blockEntity ->
             val builder = ModelData.builder()
             builder.with(TIER, blockEntity.tier)
-            builder.with(PRODUCT, blockEntity.product)
+            builder.with(CORE, blockEntity.core)
             builder.build()
         }.orElse(ModelData.EMPTY)
     }
@@ -112,7 +112,7 @@ class ResourceGenBakedModel(
     companion object {
 
         private val TIER = ModelProperty<Int>()
-        private val PRODUCT = ModelProperty<Item>()
+        private val CORE = ModelProperty<Block>()
 
         private val BAKED_QUADS_CACHE =
             CacheBuilder.newBuilder().expireAfterAccess(15L, TimeUnit.MINUTES).build<BakedKey, List<BakedQuad>>()
@@ -125,10 +125,10 @@ class ResourceGenBakedModel(
                 model: BakedModel, stack: ItemStack, level: ClientLevel?, entity: LivingEntity?, seed: Int
             ): BakedModel {
                 val tier = stack.thisModTag.get(ResourceGenNbt.Tier).coerceAtLeast(1)
-                val product = stack.thisModTag.get(ResourceGenNbt.Product)
-                val hash = Objects.hash(tier, product)
+                val core = stack.thisModTag.get(ResourceGenNbt.Core)
+                val hash = Objects.hash(tier, core)
                 RESOLVE_MODEL_CACHE.getIfPresent(hash)?.run { return this }
-                ResolveModel(model as ResourceGenBakedModel, tier, product).let {
+                ResolveModel(model as ResourceGenBakedModel, tier, core).let {
                     RESOLVE_MODEL_CACHE.put(hash, it)
                     return it
                 }
@@ -141,13 +141,13 @@ class ResourceGenBakedModel(
     private class ResolveModel(
         model: ResourceGenBakedModel,
         val tier: Int,
-        val product: Item
+        val core: Block
     ) : BakedModelWrapper<ResourceGenBakedModel>(model) {
 
         override fun getQuads(state: BlockState?, side: Direction?, rand: RandomSource): List<BakedQuad> {
             val data = ModelData.builder().apply {
                 with(TIER, tier)
-                with(PRODUCT, product)
+                with(CORE, core)
             }.build()
             return originalModel.getQuads(state, side, rand, data, null)
         }
@@ -169,6 +169,6 @@ class ResourceGenBakedModel(
 
     }
 
-    private data class BakedKey(val tier: Int, val product: Item, val side: Int)
+    private data class BakedKey(val tier: Int, val core: Block, val side: Int)
 
 }

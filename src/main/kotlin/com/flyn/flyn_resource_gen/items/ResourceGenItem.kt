@@ -11,9 +11,9 @@ import com.flyn.flyn_resource_gen.setTag
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.BlockItem
-import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
+import net.minecraft.world.level.block.Block
 import net.minecraftforge.api.distmarker.Dist
 import net.minecraftforge.client.event.RegisterColorHandlersEvent
 import net.minecraftforge.eventbus.api.SubscribeEvent
@@ -26,11 +26,11 @@ class ResourceGenItem : BlockItem(BlockInit.RESOURCE_GEN_BLOCK, Properties()) {
 
         private const val PLAINS_WATER_COLOR = 4159204
 
-        fun getItemStack(product: Item, tier: Int): ItemStack {
+        fun getItemStack(core: Block, tier: Int): ItemStack {
             return ItemStack(ItemInit.RESOURCE_GEN_BLOCK_ITEM).setTag {
                 val data = CompoundTag().apply {
                     put(ResourceGenNbt.Tier, tier)
-                    put(ResourceGenNbt.Product, product)
+                    put(ResourceGenNbt.Core, core)
                 }
                 thisModTag = data
             }
@@ -47,7 +47,7 @@ class ResourceGenItem : BlockItem(BlockInit.RESOURCE_GEN_BLOCK, Properties()) {
     }
 
     override fun getName(stack: ItemStack): Component {
-        val item = stack.thisModTag.get(ResourceGenNbt.Product)
+        val item = stack.thisModTag.get(ResourceGenNbt.Core)
             .takeUnless { it == Items.AIR }
             ?: run { return super.getName(stack)  }
         val tier = stack.thisModTag.get(ResourceGenNbt.Tier).coerceAtLeast(1)

@@ -1,6 +1,8 @@
 package com.flyn.flyn_resource_gen.block_entities
 
 import com.flyn.flyn_resource_gen.blocks.ResourceGenBlock
+import com.flyn.flyn_resource_gen.config.Config
+import com.flyn.flyn_resource_gen.config.ResourceGenProperty
 import com.flyn.flyn_resource_gen.init.BlockEntityInit
 import com.flyn.flyn_resource_gen.misc.ResourceGenNbt
 import com.flyn.flyn_resource_gen.misc.get
@@ -10,7 +12,6 @@ import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.world.item.ItemStack
-import net.minecraft.world.item.Items
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraftforge.common.capabilities.Capability
@@ -34,7 +35,11 @@ class ResourceGenBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
     }
 
     var tier = ResourceGenBlock.DEFAULT_TIER
-    var product = ResourceGenBlock.DEFAULT_ITEM
+    var core = ResourceGenBlock.EMPTY_CORE
+        set(value) {
+            property = Config.generatorProperty[value]
+            field = value
+        }
     private val inventory = object: ItemStackHandler(1) {
 
         override fun getSlotLimit(slot: Int): Int {
@@ -57,6 +62,7 @@ class ResourceGenBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
     }
     private val optional = LazyOptional.of { inventory }
     private var upContainer: LazyOptional<IItemHandler>? = null
+    private var property: ResourceGenProperty? = null
     private var ticks = 0
 
     fun getProduct(): ItemStack {
@@ -66,9 +72,7 @@ class ResourceGenBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
         }
         val takeAmount = if (stack.count >= 64) 64 else stack.count
         stack.shrink(takeAmount)
-        return ItemStack(product).apply {
-            count = takeAmount
-        }
+        return ItemStack(property!!.product, takeAmount)
     }
 
     fun updateUpContainer() {
@@ -80,6 +84,7 @@ class ResourceGenBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
                 if (upContainer != optional) {
                     upContainer = optional
                     upContainer!!.addListener { updateUpContainer() }
+                    pushProduct()
                 }
                 return
             }
@@ -93,17 +98,17 @@ class ResourceGenBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
         return upContainer!!
     }
 
-    private fun growFromTier() {
+    private fun growProduct() {
         val stack = inventory.getStackInSlot(0)
         val (amount, maxCount) = GEN_PROPERTY[tier - 1]
         if (stack.isEmpty) {
-            inventory.setStackInSlot(0, ItemStack(product).apply { count = amount })
+            inventory.setStackInSlot(0, ItemStack(property!!.product).apply { count = amount })
         } else {
             stack.count = min(stack.count + amount, maxCount)
         }
     }
 
-    private fun push() {
+    private fun pushProduct() {
         val stack = inventory.getStackInSlot(0)
         getUpContainer().map {
             ItemHandlerHelper.insertItem(it, stack, false)
@@ -116,30 +121,29 @@ class ResourceGenBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
         super.load(nbt)
         val data = nbt.thisModTag
         tier = data.get(ResourceGenNbt.Tier).coerceAtLeast(1)
-        product = data.get(ResourceGenNbt.Product)
-        inventory.setStackInSlot(0, ItemStack(product).apply {
-            count = data.get(ResourceGenNbt.Count)
-        })
+        core = data.get(ResourceGenNbt.Core)
+        if (property == null)
+            return
+        inventory.setStackInSlot(0, ItemStack(property!!.product, data.get(ResourceGenNbt.Count)))
     }
 
     override fun saveAdditional(nbt: CompoundTag) {
         super.saveAdditional(nbt)
         nbt.thisModTag = CompoundTag().apply {
             put(ResourceGenNbt.Tier, tier)
-            put(ResourceGenNbt.Product, product)
-            inventory.getStackInSlot(0).run {
-                put(ResourceGenNbt.Count, count)
-            }
+            put(ResourceGenNbt.Core, core)
+            put(ResourceGenNbt.Count, inventory.getStackInSlot(0).count)
         }
     }
 
     override fun tick() {
-        if (level == null || level!!.isClientSide)
+        if (level == null || level!!.isClientSide || property == null)
             return
-        if (product == Items.AIR || ticks++ % 10 != 0)
+        if (++ticks < property!!.interval)
             return
-        growFromTier()
-        push()
+        growProduct()
+        pushProduct()
+        ticks = 0
     }
 
     override fun <T : Any?> getCapability(cap: Capability<T>): LazyOptional<T> {
@@ -155,7 +159,7 @@ class ResourceGenBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
         val nbt = super.getUpdateTag()
         nbt.thisModTag = CompoundTag().apply {
             put(ResourceGenNbt.Tier, tier)
-            put(ResourceGenNbt.Product, product)
+            put(ResourceGenNbt.Core, core)
         }
         return nbt
     }
@@ -163,7 +167,7 @@ class ResourceGenBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
     override fun handleUpdateTag(nbt: CompoundTag) {
         val data = nbt.thisModTag
         tier = data.get(ResourceGenNbt.Tier).coerceAtLeast(1)
-        product = data.get(ResourceGenNbt.Product)
+        core = data.get(ResourceGenNbt.Core)
     }
 
 }

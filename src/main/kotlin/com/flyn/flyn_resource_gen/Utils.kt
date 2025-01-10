@@ -5,24 +5,24 @@ import net.minecraft.client.renderer.block.model.ItemTransform
 import net.minecraft.client.renderer.block.model.ItemTransforms
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.resources.ResourceLocation
-import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemDisplayContext
 import net.minecraft.world.item.ItemStack
-import net.minecraft.world.item.Items
+import net.minecraft.world.level.block.Block
+import net.minecraft.world.level.block.Blocks
 import net.minecraftforge.registries.ForgeRegistries
 import org.joml.Vector3f
 
-fun CompoundTag.getItemId(tag: String): Item = getString(tag).let {
+fun CompoundTag.getBlock(tag: String): Block = getString(tag).let {
     val resource = ResourceLocation(it)
-    if (ForgeRegistries.ITEMS.containsKey(resource)) {
-        ForgeRegistries.ITEMS.getValue(resource)!!
+    if (ForgeRegistries.BLOCKS.containsKey(resource)) {
+        ForgeRegistries.BLOCKS.getValue(resource)!!
     } else {
-        Items.AIR
+        Blocks.AIR
     }
 }
 
-fun CompoundTag.putItemId(tag: String, item: Item) {
-    val str = ForgeRegistries.ITEMS.getKey(item).toString()
+fun CompoundTag.putBlock(tag: String, block: Block) {
+    val str = ForgeRegistries.BLOCKS.getKey(block).toString()
     putString(tag, str)
 }
 

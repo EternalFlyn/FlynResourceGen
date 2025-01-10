@@ -13,11 +13,10 @@ import net.minecraft.client.renderer.BiomeColors
 import net.minecraft.core.BlockPos
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.player.Player
-import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
-import net.minecraft.world.item.Items
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
+import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.EntityBlock
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityTicker
@@ -37,7 +36,7 @@ class ResourceGenBlock(properties: Properties) : Block(properties), EntityBlock,
         const val BLOCK_NAME = "resource_gen_block"
         const val DEFAULT_TIER = 1
         const val MAX_TIER = 6
-        val DEFAULT_ITEM: Item = Items.AIR
+        val EMPTY_CORE: Block = Blocks.AIR
 
         @SubscribeEvent
         fun registerWaterColor(event: RegisterColorHandlersEvent.Block) {
@@ -85,14 +84,14 @@ class ResourceGenBlock(properties: Properties) : Block(properties), EntityBlock,
     ) {
         level.getBlockEntity(pos, RESOURCE_GEN_BLOCK_ENTITY).ifPresent { blockEntity ->
             blockEntity.tier = stack.thisModTag.get(ResourceGenNbt.Tier)
-            blockEntity.product = stack.thisModTag.get(ResourceGenNbt.Product)
+            blockEntity.core = stack.thisModTag.get(ResourceGenNbt.Core)
         }
     }
 
     override fun addDropData(stack: ItemStack, blockEntity: ResourceGenBlockEntity): ItemStack {
         stack.thisModTag.apply {
             put(ResourceGenNbt.Tier, blockEntity.tier)
-            put(ResourceGenNbt.Product, blockEntity.product)
+            put(ResourceGenNbt.Core, blockEntity.core)
         }
          return stack
     }

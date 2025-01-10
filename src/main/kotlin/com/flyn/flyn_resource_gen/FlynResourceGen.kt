@@ -1,5 +1,6 @@
 package com.flyn.flyn_resource_gen
 
+import com.flyn.flyn_resource_gen.config.Config
 import com.flyn.flyn_resource_gen.init.*
 import com.flyn.flyn_resource_gen.render.ResourceGenUnbakedModel
 import net.minecraftforge.client.event.ModelEvent
@@ -52,7 +53,7 @@ object FlynResourceGen {
     @SubscribeEvent
     @Suppress("UNUSED_PARAMETER")
     fun onLoadComplete(event: FMLLoadCompleteEvent) {
-        LOGGER.info("Items: ${Config.canGenerateBlocks}")
+        LOGGER.info("Items: ${Config.generatorProperty}")
     }
 
     @Suppress("UNUSED_PARAMETER")
