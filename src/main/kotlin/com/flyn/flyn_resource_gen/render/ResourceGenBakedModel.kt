@@ -1,9 +1,8 @@
 package com.flyn.flyn_resource_gen.render
 
 import com.flyn.flyn_resource_gen.DEFAULT_ITEM_TRANSFORMS
-import com.flyn.flyn_resource_gen.blocks.ResourceGenBlock.Companion.EMPTY_CORE
-import com.flyn.flyn_resource_gen.blocks.ResourceGenBlock.Companion.DEFAULT_TIER
 import com.flyn.flyn_resource_gen.config.Config
+import com.flyn.flyn_resource_gen.config.ResourceGenProperty
 import com.flyn.flyn_resource_gen.init.BlockEntityInit
 import com.flyn.flyn_resource_gen.misc.ResourceGenNbt
 import com.flyn.flyn_resource_gen.misc.get
@@ -46,8 +45,8 @@ class ResourceGenBakedModel(
     override fun getQuads(
         state: BlockState?, side: Direction?, rand: RandomSource, extraData: ModelData, renderType: RenderType?
     ): List<BakedQuad> {
-        val tier = extraData[TIER] ?: DEFAULT_TIER
-        val core = extraData[CORE] ?: EMPTY_CORE
+        val tier = extraData[TIER] ?: ResourceGenProperty.DEFAULT_TIER
+        val core = extraData[CORE] ?: ResourceGenProperty.EMPTY_CORE
         val key = getBakedKey(tier, core, side)
         // return the cache if exist
         BAKED_QUADS_CACHE.getIfPresent(key)?.run { return this }

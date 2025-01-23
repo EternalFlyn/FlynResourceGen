@@ -16,7 +16,6 @@ import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
-import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.EntityBlock
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityTicker
@@ -34,9 +33,6 @@ class ResourceGenBlock(properties: Properties) : Block(properties), EntityBlock,
     companion object {
 
         const val BLOCK_NAME = "resource_gen_block"
-        const val DEFAULT_TIER = 1
-        const val MAX_TIER = 6
-        val EMPTY_CORE: Block = Blocks.AIR
 
         @SubscribeEvent
         fun registerWaterColor(event: RegisterColorHandlersEvent.Block) {

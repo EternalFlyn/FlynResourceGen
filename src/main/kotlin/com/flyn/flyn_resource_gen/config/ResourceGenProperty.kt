@@ -7,6 +7,7 @@ import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.Items
 import net.minecraft.world.level.block.Block
+import net.minecraft.world.level.block.Blocks
 import net.minecraftforge.registries.ForgeRegistries
 
 data class ResourceGenProperty(
@@ -16,6 +17,13 @@ data class ResourceGenProperty(
 ) {
 
     companion object {
+
+        const val DEFAULT_TIER = 1
+        const val MAX_TIER = 6
+        val TIER_RANGE = DEFAULT_TIER..MAX_TIER
+        val EMPTY_CORE: Block = Blocks.AIR
+        private val YIELD = Array(MAX_TIER) { index -> 1 shl index }
+        private val SLOT_LIMIT = Array(MAX_TIER) { index -> 64 shl index shl index }
 
         private fun getBlock(name: String): Block? {
             try {
@@ -72,6 +80,16 @@ data class ResourceGenProperty(
                 val replace = ForgeRegistries.ITEMS.getKey(property.product)
                 "$block, ${property.interval}, $replace"
             }
+        }
+
+        fun getYield(tier: Int): Int {
+            return if (tier in TIER_RANGE) YIELD[tier - 1]
+            else YIELD[0]
+        }
+
+        fun getSlotLimit(tier: Int): Int {
+            return if (tier in TIER_RANGE) SLOT_LIMIT[tier - 1]
+            else SLOT_LIMIT[0]
         }
 
     }

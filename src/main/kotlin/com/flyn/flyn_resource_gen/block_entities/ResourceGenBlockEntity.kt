@@ -1,6 +1,5 @@
 package com.flyn.flyn_resource_gen.block_entities
 
-import com.flyn.flyn_resource_gen.blocks.ResourceGenBlock
 import com.flyn.flyn_resource_gen.config.Config
 import com.flyn.flyn_resource_gen.config.ResourceGenProperty
 import com.flyn.flyn_resource_gen.init.BlockEntityInit
@@ -26,16 +25,8 @@ class ResourceGenBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
     BlockEntityInit.RESOURCE_GEN_BLOCK_ENTITY, pos, state
 ), TickableBlockEntity {
 
-    companion object {
-
-        private val GEN_PROPERTY = List(ResourceGenBlock.MAX_TIER) { index ->
-            (1 shl index) to (64 shl index shl index)
-        }
-
-    }
-
-    var tier = ResourceGenBlock.DEFAULT_TIER
-    var core = ResourceGenBlock.EMPTY_CORE
+    var tier = ResourceGenProperty.DEFAULT_TIER
+    var core = ResourceGenProperty.EMPTY_CORE
         set(value) {
             property = Config.generatorProperty[value]
             field = value
@@ -43,7 +34,7 @@ class ResourceGenBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
     private val inventory = object: ItemStackHandler(1) {
 
         override fun getSlotLimit(slot: Int): Int {
-            return GEN_PROPERTY[tier - 1].second
+            return ResourceGenProperty.getSlotLimit(tier)
         }
 
         override fun onContentsChanged(slot: Int) {
@@ -100,7 +91,8 @@ class ResourceGenBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(
 
     private fun growProduct() {
         val stack = inventory.getStackInSlot(0)
-        val (amount, maxCount) = GEN_PROPERTY[tier - 1]
+        val amount = ResourceGenProperty.getYield(tier)
+        val maxCount = ResourceGenProperty.getSlotLimit(tier)
         if (stack.isEmpty) {
             inventory.setStackInSlot(0, ItemStack(property!!.product).apply { count = amount })
         } else {

@@ -31,10 +31,10 @@ class ResourceGenRecipe(
     companion object {
 
         private val FRAME_POS = arrayOf(0, 1, 2, 6, 8)
-        private val GLASS_POS = 4
-        private val FLUID_POS_L = 3
-        private val FLUID_POS_R = 5
-        private val CORE_POS = 7
+        private const val GLASS_POS = 4
+        private const val FLUID_POS_L = 3
+        private const val FLUID_POS_R = 5
+        private const val CORE_POS = 7
 
         // for JEI
         fun getRecipes(): List<CraftingRecipe> {
